@@ -1,0 +1,55 @@
+{
+  "extraction": {
+    "customer_name_as_written": "Lakeshore Foods",
+    "lines": [
+      {
+        "as_written": "3 HP TEFC motor, 1800 rpm, 3 phase - qty 2",
+        "customer_part_number": null,
+        "flags": [
+          "amended_in_thread"
+        ],
+        "item_description": "5 HP TEFC motor, 1800 rpm, 3 phase",
+        "note": "Rick Dawson changed the motor size from 3 HP to 5 HP; quantity stays 2.",
+        "quantity": 2.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": null
+      },
+      {
+        "as_written": "2\" flange gaskets 150# - qty 20",
+        "customer_part_number": null,
+        "flags": [
+          "amended_in_thread"
+        ],
+        "item_description": "2 in flange gaskets 150 lb",
+        "note": "Rick Dawson raised the quantity from 20 to 40.",
+        "quantity": 40.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": null
+      },
+      {
+        "as_written": "food grade grease cartridges - 3 cases",
+        "customer_part_number": null,
+        "flags": [],
+        "item_description": "food grade grease cartridges",
+        "note": "Rick Dawson said the grease is fine as is, so no change.",
+        "quantity": 3.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "cases"
+      }
+    ],
+    "non_item_rows": [],
+    "sender_email": "npatel@lakeshorefoods.example"
+  },
+  "model": "claude-sonnet-5-5",
+  "prompt_sha256": "402831a24d86e468222e73b94b85ee346f19080b950823b0699385832f1ca9f7",
+  "prompt_version": "extract_v1",
+  "source_sha256": "495ad8b0d2691c26c8a4854da9fca59cbb27446b9d63d70017bc1e3b6e2f071c",
+  "stats": {
+    "attempts": 1,
+    "inference_geo": "us",
+    "input_tokens": 3252,
+    "latency_s": 2.92,
+    "output_tokens": 466,
+    "temperature_applied": false
+  }
+}

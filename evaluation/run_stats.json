@@ -1,0 +1,63 @@
+{
+  "stage": "extract",
+  "model": "claude-sonnet-5-5",
+  "prompt_version": "extract_v1",
+  "inference_geo_requested": "us",
+  "metrics_source": "latency, tokens, inference_geo and attempts come from the live API call that produced each result; cached says whether the most recent run reused it",
+  "rfqs": {
+    "rfq_01_email": {
+      "status": "ok",
+      "cached": true,
+      "latency_s": 4.17,
+      "input_tokens": 3078,
+      "output_tokens": 602,
+      "inference_geo": "us",
+      "attempts": 1,
+      "temperature_applied": false
+    },
+    "rfq_02_clearwater": {
+      "status": "ok",
+      "cached": true,
+      "latency_s": 4.85,
+      "input_tokens": 3538,
+      "output_tokens": 830,
+      "inference_geo": "us",
+      "attempts": 1,
+      "temperature_applied": false
+    },
+    "rfq_03_tricounty": {
+      "status": "ok",
+      "cached": true,
+      "latency_s": 10.47,
+      "input_tokens": 3260,
+      "output_tokens": 1824,
+      "inference_geo": "us",
+      "attempts": 1,
+      "temperature_applied": false
+    },
+    "rfq_04_handwritten": {
+      "status": "unsupported",
+      "reason": "needs OCR / unsupported: image (.png)"
+    },
+    "rfq_05_forwarded_chain": {
+      "status": "ok",
+      "cached": true,
+      "latency_s": 2.92,
+      "input_tokens": 3252,
+      "output_tokens": 466,
+      "inference_geo": "us",
+      "attempts": 1,
+      "temperature_applied": false
+    },
+    "rfq_06_messy": {
+      "status": "ok",
+      "cached": true,
+      "latency_s": 4.33,
+      "input_tokens": 3033,
+      "output_tokens": 730,
+      "inference_geo": "us",
+      "attempts": 1,
+      "temperature_applied": false
+    }
+  }
+}

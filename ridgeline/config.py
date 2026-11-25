@@ -19,6 +19,15 @@ PRODUCTS_CSV = DATA_DIR / "products.csv"
 CROSS_REFERENCE_CSV = DATA_DIR / "cross_reference.csv"
 CUSTOMERS_CSV = DATA_DIR / "customers.csv"
 OUTPUTS_DIR = ROOT / "outputs"
+PROMPTS_DIR = ROOT / "ridgeline" / "prompts"
+
+# The extraction cache is committed, so anyone can reproduce the outputs and metrics
+# without an API key. In production this cache would live in a US bucket with a
+# retention policy.
+CACHE_DIR = ROOT / ".cache" / "llm"
+
+EVALUATION_DIR = ROOT / "evaluation"
+RUN_STATS_JSON = EVALUATION_DIR / "run_stats.json"
 
 REVIEW_THRESHOLD = 0.80
 PROMPT_VERSION = "extract_v1"

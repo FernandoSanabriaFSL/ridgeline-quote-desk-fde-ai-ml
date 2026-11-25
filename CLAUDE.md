@@ -44,3 +44,4 @@ Always run Python and pip from the project venv: .venv/bin/python and .venv/bin/
 7. Secrets live only in `.env`, which is gitignored. Never print or log a key, and never write a key-like placeholder value in any file.
 8. `README.md` keeps exactly its six headings. Anything inside a section uses `###` or deeper.
 9. Append the log entry for the current exchange before any commit made in that exchange.
+10. Every stage ends with a commit and a push to origin main.

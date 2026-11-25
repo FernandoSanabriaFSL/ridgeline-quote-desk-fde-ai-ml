@@ -1,0 +1,84 @@
+{
+  "extraction": {
+    "customer_name_as_written": "Clearwater Bottling Co.",
+    "lines": [
+      {
+        "as_written": "APX-BB-6206ZZ Ball bearing 6206 ZZ shielded",
+        "customer_part_number": "APX-BB-6206ZZ",
+        "flags": [],
+        "item_description": "ball bearing 6206 ZZ shielded",
+        "note": null,
+        "quantity": 12.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "APX-VB-B55 V-belt B55",
+        "customer_part_number": "APX-VB-B55",
+        "flags": [],
+        "item_description": "V-belt B55",
+        "note": null,
+        "quantity": 4.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "APX-HF-JIC08-90 JIC -08 x 1/2 NPT 90 elbow",
+        "customer_part_number": "APX-HF-JIC08-90",
+        "flags": [],
+        "item_description": "JIC -08 x 1/2 in NPT 90 degree elbow",
+        "note": null,
+        "quantity": 25.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "APX-FL-HE10 Hyd. return element 10 micron cellulose",
+        "customer_part_number": "APX-FL-HE10",
+        "flags": [],
+        "item_description": "hydraulic return element 10 micron cellulose",
+        "note": null,
+        "quantity": 6.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "APX-GL-A4-L Cut resistant glove A4, Large",
+        "customer_part_number": "APX-GL-A4-L",
+        "flags": [],
+        "item_description": "cut resistant glove A4, large",
+        "note": null,
+        "quantity": 12.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "PR"
+      },
+      {
+        "as_written": "APX-BV-SS100 1\" ball valve, 316 SS, full port",
+        "customer_part_number": "APX-BV-SS100",
+        "flags": [],
+        "item_description": "1 in ball valve, 316 stainless steel, full port",
+        "note": null,
+        "quantity": 3.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      }
+    ],
+    "non_item_rows": [
+      "Ship to: Plant 1 receiving dock. Terms per contract. Buyer: Karen Ellis,",
+      "kellis@clearwaterbottling.example"
+    ],
+    "sender_email": "kellis@clearwaterbottling.example"
+  },
+  "model": "claude-sonnet-5-5",
+  "prompt_sha256": "3f39091305e61d9060698ad6b1b1518b41112f785929c6cbc2880eeca864ec96",
+  "prompt_version": "extract_v2",
+  "source_sha256": "f70561bc73aa69b2de1721701ad78fa858a31720cd537425ab4b7b449ebd0a15",
+  "stats": {
+    "attempts": 1,
+    "inference_geo": "us",
+    "input_tokens": 3574,
+    "latency_s": 4.55,
+    "output_tokens": 830,
+    "temperature_applied": false
+  }
+}

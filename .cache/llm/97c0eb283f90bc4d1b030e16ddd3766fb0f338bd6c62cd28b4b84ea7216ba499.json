@@ -1,0 +1,103 @@
+{
+  "extraction": {
+    "customer_name_as_written": "Tri-County Water District",
+    "lines": [
+      {
+        "as_written": "NF-220418 3/4 brass ball valve FP",
+        "customer_part_number": "NF-220418",
+        "flags": [],
+        "item_description": "3/4 in brass ball valve full port",
+        "note": null,
+        "quantity": 15.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "NF-220420 1\" brass ball valve FP",
+        "customer_part_number": "NF-220420",
+        "flags": [],
+        "item_description": "1 in brass ball valve full port",
+        "note": null,
+        "quantity": 10.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "same as above but 1/2\"",
+        "customer_part_number": null,
+        "flags": [],
+        "item_description": "1/2 in brass ball valve full port",
+        "note": "Resolved from the line above (NF-220420, 1 in brass ball valve FP) with the size changed to 1/2 in; the notes column says same spec as line 2.",
+        "quantity": 10.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "NF-118203 2\" flange gasket 150#",
+        "customer_part_number": "NF-118203",
+        "flags": [],
+        "item_description": "2 in flange gasket 150 lb",
+        "note": null,
+        "quantity": 40.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "NF-118204 3\" flange gasket 150#",
+        "customer_part_number": "NF-118204",
+        "flags": [],
+        "item_description": "3 in flange gasket 150 lb, 1/16 in thick",
+        "note": "Notes column says 1/16 thk.",
+        "quantity": 40.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      },
+      {
+        "as_written": "NF-310077 AW46 hyd oil 5 gal",
+        "customer_part_number": "NF-310077",
+        "flags": [],
+        "item_description": "AW46 hydraulic oil 5 gal",
+        "note": null,
+        "quantity": 6.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "PAIL"
+      },
+      {
+        "as_written": "NF-505512 20x20x2 pleated filter MERV 8",
+        "customer_part_number": "NF-505512",
+        "flags": [],
+        "item_description": "20x20x2 pleated filter MERV 8",
+        "note": "Notes column says case of 12.",
+        "quantity": 4.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "CS"
+      },
+      {
+        "as_written": "NF-999120 Chlorine residual test kit",
+        "customer_part_number": "NF-999120",
+        "flags": [],
+        "item_description": "Chlorine residual test kit",
+        "note": "Notes column says 'if available'.",
+        "quantity": 2.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "EA"
+      }
+    ],
+    "non_item_rows": [
+      "Deliver to Plant 2, 4100 County Rd 9. Dock closes 2pm."
+    ],
+    "sender_email": null
+  },
+  "model": "claude-sonnet-5-5",
+  "prompt_sha256": "3f39091305e61d9060698ad6b1b1518b41112f785929c6cbc2880eeca864ec96",
+  "prompt_version": "extract_v2",
+  "source_sha256": "5150ab6aa4b546f15142c87c66c60db81d583dfd9252b8c945dcdcbedd6c576d",
+  "stats": {
+    "attempts": 1,
+    "inference_geo": "us",
+    "input_tokens": 3296,
+    "latency_s": 11.14,
+    "output_tokens": 1874,
+    "temperature_applied": false
+  }
+}

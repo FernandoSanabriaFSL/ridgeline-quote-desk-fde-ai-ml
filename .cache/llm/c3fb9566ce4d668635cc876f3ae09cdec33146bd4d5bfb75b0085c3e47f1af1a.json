@@ -1,0 +1,78 @@
+{
+  "extraction": {
+    "customer_name_as_written": "Mesa Fabrication",
+    "lines": [
+      {
+        "as_written": "20 ea 6204-2RS bearings",
+        "customer_part_number": null,
+        "flags": [],
+        "item_description": "6204-2RS bearings",
+        "note": null,
+        "quantity": 20.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "ea"
+      },
+      {
+        "as_written": "10 A42 v-belts",
+        "customer_part_number": null,
+        "flags": [],
+        "item_description": "A42 v-belts",
+        "note": null,
+        "quantity": 10.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": null
+      },
+      {
+        "as_written": "RL159429 x 3",
+        "customer_part_number": null,
+        "flags": [],
+        "item_description": "",
+        "note": null,
+        "quantity": 3.0,
+        "ridgeline_part_number_as_written": "RL159429",
+        "unit_as_written": null
+      },
+      {
+        "as_written": "1/2-13 x 2\" grade 8 hex bolts, 2 boxes",
+        "customer_part_number": null,
+        "flags": [],
+        "item_description": "1/2-13 x 2 in grade 8 hex bolts",
+        "note": null,
+        "quantity": 2.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "boxes"
+      },
+      {
+        "as_written": "Same grease cartridges as last order, 2 cases",
+        "customer_part_number": null,
+        "flags": [
+          "needs_human_review"
+        ],
+        "item_description": "grease cartridges",
+        "note": "Customer refers to a previous order for the grease cartridges spec; not resolved.",
+        "quantity": 2.0,
+        "ridgeline_part_number_as_written": null,
+        "unit_as_written": "cases"
+      }
+    ],
+    "non_item_rows": [
+      "Thanks,",
+      "Luis Ortega",
+      "Purchasing, Mesa Fabrication",
+      "(480) 555-0142"
+    ],
+    "sender_email": "lortega@mesafab.example"
+  },
+  "model": "claude-sonnet-5-5",
+  "prompt_sha256": "3f39091305e61d9060698ad6b1b1518b41112f785929c6cbc2880eeca864ec96",
+  "prompt_version": "extract_v2",
+  "source_sha256": "f802c612cb1fef9948234a5626304ac9ea4f3e657f376b8041ea748093a61bad",
+  "stats": {
+    "attempts": 1,
+    "inference_geo": "us",
+    "input_tokens": 3114,
+    "latency_s": 4.74,
+    "output_tokens": 595,
+    "temperature_applied": false
+  }
+}

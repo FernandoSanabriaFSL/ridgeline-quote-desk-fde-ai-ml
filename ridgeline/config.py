@@ -30,7 +30,7 @@ EVALUATION_DIR = ROOT / "evaluation"
 RUN_STATS_JSON = EVALUATION_DIR / "run_stats.json"
 
 REVIEW_THRESHOLD = 0.80
-PROMPT_VERSION = "extract_v1"
+PROMPT_VERSION = "extract_v2"
 
 # `or` instead of a getenv default, so an empty value (for example copied from
 # .env.example) falls back to the default too.

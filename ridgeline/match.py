@@ -81,7 +81,7 @@ def normalize(text: str) -> frozenset[str]:
         # into parts (3/8-16 -> 3/8, 16; o-ring -> o, ring).
         pieces = [raw] if re.fullmatch(r"\d+-\d+/\d+", raw) or "-" not in raw else raw.split("-")
         for piece in pieces:
-            letters_digits = re.fullmatch(r"([a-z]+)(\d+)", piece)  # aw46 -> aw, 46 (but 2rs stays)
+            letters_digits = re.fullmatch(r"([a-z]+)(\d+)", piece)  # letters then digits split ("ab12" -> "ab", "12"); digits then letters stay whole ("12ab")
             parts.extend(letters_digits.groups() if letters_digits else [piece])
     parts = [_stem(p) if p.isalpha() else p for p in parts]
 
@@ -144,7 +144,7 @@ def build_index(catalog: Catalog) -> Index:
     for part_number, product in catalog.products.items():
         text = f"{product.description} {product.category}"
         tokens[part_number] = normalize(text)
-        # A part code is what follows a 3+ digit model number after a hyphen (6204-2RS, 6204-ZZ).
+        # A part code is what follows a model number of 3+ digits after a hyphen ("<model>-<code>").
         codes[part_number] = frozenset(
             (model, code)
             for model, code in re.findall(r"\b(\d{3,})-([a-z0-9]+)\b", product.description.lower())
@@ -289,6 +289,10 @@ def match_line(
     request = normalize(line.item_description)
     review_only = "needs_human_review" in line.flags or "unparseable" in line.flags
     customer_pn = (line.customer_part_number or "").strip()
+    if "customer_part_number_not_in_source" in line.flags:
+        # The customer didn't write it, so it is not used for the lookup; the flag sends the line to review.
+        notes.append(f"{customer_pn} was not found in the RFQ text, so it was not used")
+        customer_pn = ""
     customer_unit = normalize_unit(line.unit_as_written)
 
     product: Product | None = None
@@ -299,6 +303,10 @@ def match_line(
 
     # a. a Ridgeline part number the customer wrote
     written_rl = (line.ridgeline_part_number_as_written or "").strip().upper()
+    if "ridgeline_part_number_not_in_source" in line.flags:
+        # The customer didn't write it, so step a is skipped; the flag sends the line to review.
+        notes.append(f"{written_rl} was not found in the RFQ text, so it was not used")
+        written_rl = ""
     if written_rl:
         product = catalog.products.get(written_rl)
         if product is not None:

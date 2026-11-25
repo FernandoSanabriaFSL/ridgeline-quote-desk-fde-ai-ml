@@ -142,8 +142,20 @@ def _numbers_in(source: str) -> set[float]:
     return {float(token.replace(",", "")) for token in _NUMBER_RE.findall(source)}
 
 
+def _alnum(text: str) -> str:
+    """Lowercase, with everything except letters and digits removed."""
+    return re.sub(r"[^a-z0-9]", "", text.lower())
+
+
+def _part_number_in_source(part_number: str, alnum_source: str) -> bool:
+    """True if the part number appears in the source, compared on letters and digits only, any case."""
+    key = _alnum(part_number)
+    return bool(key) and key in alnum_source
+
+
 def _check_lines(output: ExtractionOutput, source: str) -> list[CheckedLine]:
     norm_source = _norm(source)
+    alnum_source = _alnum(source)
     rows = _table_rows(source)
     numbers = _numbers_in(source)
     checked = []
@@ -157,6 +169,14 @@ def _check_lines(output: ExtractionOutput, source: str) -> list[CheckedLine]:
                 flags.append("quantity_not_in_source")
             if float(quantity).is_integer():
                 quantity = int(quantity)
+        # The model must never put a part number on a quote that the customer didn't write.
+        # The matcher skips a part number carrying one of these flags.
+        for value, flag in (
+            (line.ridgeline_part_number_as_written, "ridgeline_part_number_not_in_source"),
+            (line.customer_part_number, "customer_part_number_not_in_source"),
+        ):
+            if value and value.strip() and not _part_number_in_source(value, alnum_source):
+                flags.append(flag)
         checked.append(CheckedLine(
             as_written=line.as_written,
             customer_part_number=line.customer_part_number,

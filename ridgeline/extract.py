@@ -333,8 +333,13 @@ def _cache_write(path: Path, prompt_sha: str, source: str, output: ExtractionOut
 
 # --- Entry point ----------------------------------------------------------------------------
 
-def extract_rfq(path: Path, customers: dict[str, Customer], refresh: bool = False) -> ExtractedRfq:
-    """Extract one RFQ file. Never raises: failures come back as status "failed" with a reason."""
+def extract_rfq(
+    path: Path, customers: dict[str, Customer], refresh: bool = False, cache_only: bool = False
+) -> ExtractedRfq:
+    """Extract one RFQ file. Never raises: failures come back as status "failed" with a reason.
+
+    With cache_only=True the model is never called: a cache miss is a "failed" result.
+    """
     rfq_id = path.stem
     where = _display_path(path)
     try:
@@ -352,6 +357,9 @@ def extract_rfq(path: Path, customers: dict[str, Customer], refresh: bool = Fals
         if cached is not None:
             output, stats = cached
             stats["cached"] = True
+        elif cache_only:
+            reason = f"no cached extraction for this model and prompt; run --stage extract first (source: {where})"
+            return ExtractedRfq(rfq_id, where, "failed", reason=reason)
         else:
             output, stats = _call_with_retry(prompt, doc.text)
             _cache_write(cache_file, prompt_sha, doc.text, output, stats)

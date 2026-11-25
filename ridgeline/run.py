@@ -1,16 +1,19 @@
-"""Entry point: python -m ridgeline.run [--stage extract] [--refresh]
+"""Entry point: python -m ridgeline.run [--stage extract|match] [--refresh]
 
 Without --stage: prints the catalog data-quality report and lists the RFQ files.
 --stage extract: runs the extraction stage on every RFQ and prints the result.
+--stage match: matches the cached extractions to Ridgeline part numbers (no model calls).
 """
 import argparse
 import json
 import textwrap
+from collections import Counter
 from pathlib import Path
 
 from ridgeline import config
 from ridgeline.catalog import load_catalog
 from ridgeline.extract import ExtractedRfq, extract_rfq
+from ridgeline.match import MatchedLine, build_index, match_rfq
 
 
 def list_rfq_files() -> list[Path]:
@@ -81,6 +84,56 @@ def print_extracted(result: ExtractedRfq) -> None:
             print(f"  note {number}: {line.note}")
 
 
+def print_matched(result: ExtractedRfq, matched: list[MatchedLine]) -> None:
+    print(f"\n=== {result.rfq_id} ({Path(result.source_path).name}) ===")
+    if result.customer_id:
+        print(f"customer: {result.customer_id} {result.customer_name}")
+    else:
+        print("customer: unresolved")
+    print(f"lines ({len(matched)}), '-' means null:")
+    rows = [
+        [
+            str(m.line),
+            m.as_written,
+            _dash(m.ridgeline_part_number),
+            _dash(m.match_method),
+            "-" if m.confidence is None else f"{m.confidence:.3f}",
+            "yes" if m.needs_review else "no",
+            _dash(m.unit),
+            _dash(m.quantity),
+            ", ".join(m.flags) or "-",
+        ]
+        for m in matched
+    ]
+    headers = ["#", "as_written", "part number", "method", "conf", "review", "unit", "qty", "flags"]
+    for text in _table(headers, rows, [2, 28, 9, 21, 5, 6, 4, 5, 36]):
+        print(text)
+    for m in matched:
+        if m.note:
+            print(f"  note {m.line}: {m.note}")
+    for m in matched:
+        if m.candidates:
+            print(f"  candidates, line {m.line}:")
+            for c in m.candidates:
+                description = c.description if len(c.description) <= 78 else c.description[:77] + "…"
+                print(f"    {c.score:.3f}  {c.part_number} [{c.unit}]  {description}")
+
+
+# --- run_stats.json: each stage updates only its own keys ------------------------------------
+
+def _read_run_stats() -> dict:
+    try:
+        data = json.loads(config.RUN_STATS_JSON.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _write_run_stats(data: dict) -> None:
+    config.EVALUATION_DIR.mkdir(parents=True, exist_ok=True)
+    config.RUN_STATS_JSON.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
 def write_run_stats(results: list[ExtractedRfq]) -> None:
     per_rfq = {}
     for result in results:
@@ -91,7 +144,8 @@ def write_run_stats(results: list[ExtractedRfq]) -> None:
         else:
             entry["reason"] = result.reason
         per_rfq[result.rfq_id] = entry
-    payload = {
+    data = _read_run_stats()
+    data.update({
         "stage": "extract",
         "model": config.LLM_MODEL,
         "prompt_version": config.PROMPT_VERSION,
@@ -101,9 +155,8 @@ def write_run_stats(results: list[ExtractedRfq]) -> None:
             "each result; cached says whether the most recent run reused it"
         ),
         "rfqs": per_rfq,
-    }
-    config.EVALUATION_DIR.mkdir(parents=True, exist_ok=True)
-    config.RUN_STATS_JSON.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    })
+    _write_run_stats(data)
 
 
 # --- Stages ---------------------------------------------------------------------------------
@@ -121,14 +174,62 @@ def run_extract(refresh: bool) -> None:
     print(f"run stats: {config.RUN_STATS_JSON.relative_to(config.ROOT)}")
 
 
+def run_match() -> None:
+    """Match the cached extractions. cache_only=True: this stage can never call the model."""
+    catalog = load_catalog()
+    index = build_index(catalog)
+    as_of = config.AS_OF_DATE
+    print(f"as-of date for the cross-reference staleness check: {as_of.isoformat()} | review threshold {config.REVIEW_THRESHOLD}")
+
+    per_rfq: dict[str, dict] = {}
+    methods: Counter = Counter()
+    totals = Counter()
+    for path in list_rfq_files():
+        extracted = extract_rfq(path, catalog.customers, cache_only=True)
+        if extracted.status != "ok":
+            print(f"\n=== {extracted.rfq_id} ({path.name}) ===")
+            print(f"status: {extracted.status}")
+            print(f"reason: {extracted.reason}")
+            per_rfq[extracted.rfq_id] = {"status": extracted.status, "reason": extracted.reason}
+            continue
+        matched = match_rfq(extracted, catalog, index, as_of)
+        print_matched(extracted, matched)
+        got = sum(1 for m in matched if m.ridgeline_part_number)
+        review = sum(1 for m in matched if m.needs_review)
+        per_rfq[extracted.rfq_id] = {"status": "ok", "lines": len(matched), "matched": got, "needs_review": review}
+        totals.update(lines=len(matched), matched=got, needs_review=review)
+        methods.update(m.match_method for m in matched if m.match_method)
+
+    print(
+        f"\n{totals['lines']} lines: {totals['matched']} matched, {totals['lines'] - totals['matched']} unmatched, "
+        f"{totals['needs_review']} need review"
+    )
+    data = _read_run_stats()
+    data["match"] = {
+        "as_of_date": as_of.isoformat(),
+        "review_threshold": config.REVIEW_THRESHOLD,
+        "lines": totals["lines"],
+        "matched": totals["matched"],
+        "unmatched": totals["lines"] - totals["matched"],
+        "needs_review": totals["needs_review"],
+        "by_method": dict(sorted(methods.items())),
+        "rfqs": per_rfq,
+    }
+    _write_run_stats(data)
+    print(f"run stats: {config.RUN_STATS_JSON.relative_to(config.ROOT)}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="python -m ridgeline.run")
-    parser.add_argument("--stage", choices=["extract"], help="run a pipeline stage")
-    parser.add_argument("--refresh", action="store_true", help="skip the extraction cache")
+    parser.add_argument("--stage", choices=["extract", "match"], help="run a pipeline stage")
+    parser.add_argument("--refresh", action="store_true", help="skip the extraction cache (extract stage)")
     args = parser.parse_args()
 
     if args.stage == "extract":
         run_extract(refresh=args.refresh)
+        return
+    if args.stage == "match":
+        run_match()
         return
 
     load_catalog(report=True)

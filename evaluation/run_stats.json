@@ -59,5 +59,54 @@
       "attempts": 1,
       "temperature_applied": false
     }
+  },
+  "match": {
+    "as_of_date": "2026-11-25",
+    "review_threshold": 0.8,
+    "lines": 28,
+    "matched": 24,
+    "unmatched": 4,
+    "needs_review": 11,
+    "by_method": {
+      "cross_reference": 11,
+      "description": 12,
+      "ridgeline_part_number": 1
+    },
+    "rfqs": {
+      "rfq_01_email": {
+        "status": "ok",
+        "lines": 5,
+        "matched": 4,
+        "needs_review": 1
+      },
+      "rfq_02_clearwater": {
+        "status": "ok",
+        "lines": 6,
+        "matched": 6,
+        "needs_review": 1
+      },
+      "rfq_03_tricounty": {
+        "status": "ok",
+        "lines": 8,
+        "matched": 7,
+        "needs_review": 1
+      },
+      "rfq_04_handwritten": {
+        "status": "unsupported",
+        "reason": "needs OCR / unsupported: image (.png)"
+      },
+      "rfq_05_forwarded_chain": {
+        "status": "ok",
+        "lines": 3,
+        "matched": 3,
+        "needs_review": 2
+      },
+      "rfq_06_messy": {
+        "status": "ok",
+        "lines": 6,
+        "matched": 4,
+        "needs_review": 6
+      }
+    }
   }
 }

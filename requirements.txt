@@ -1,0 +1,5 @@
+anthropic
+pydantic>=2
+pdfplumber
+openpyxl
+python-dotenv

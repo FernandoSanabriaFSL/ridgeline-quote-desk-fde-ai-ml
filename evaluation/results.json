@@ -1,0 +1,188 @@
+{
+  "threshold": 0.8,
+  "extraction_accuracy": 1.0,
+  "match_precision": 1.0,
+  "match_recall": 1.0,
+  "additional_metrics": {
+    "expected_null_handled": {
+      "handled": 2,
+      "total": 2,
+      "rate": 1.0
+    },
+    "per_field_accuracy": {
+      "quantity": 1.0,
+      "unit": 1.0,
+      "as_written": 1.0,
+      "line_count_per_rfq": {
+        "rfq_01_email": {
+          "expected": 5,
+          "got": 5,
+          "match": true
+        },
+        "rfq_02_clearwater": {
+          "expected": 6,
+          "got": 6,
+          "match": true
+        },
+        "rfq_03_tricounty": {
+          "expected": 8,
+          "got": 8,
+          "match": true
+        }
+      }
+    },
+    "match_method_accuracy_on_correct_matches": {
+      "correct": 17,
+      "total": 17,
+      "rate": 1.0
+    },
+    "flag_recall": {
+      "discontinued_replaced": {
+        "expected": 1,
+        "met": 1,
+        "recall": 1.0
+      },
+      "needs_human_review": {
+        "expected": 1,
+        "met": 1,
+        "recall": 1.0
+      },
+      "not_carried": {
+        "expected": 1,
+        "met": 1,
+        "recall": 1.0
+      },
+      "overall": {
+        "expected": 3,
+        "met": 3,
+        "recall": 1.0
+      }
+    },
+    "review_rate": {
+      "labeled_lines": {
+        "reviewed": 3,
+        "total": 19,
+        "rate": 0.1579
+      },
+      "all_processed_lines_excluding_stub": {
+        "reviewed": 11,
+        "total": 28,
+        "rate": 0.3929
+      }
+    },
+    "auto_accept": {
+      "labeled_lines_auto_accepted": 16,
+      "correct": 16,
+      "precision": 1.0,
+      "wrong_lines_auto_accepted": 0
+    },
+    "mean_confidence": {
+      "correct_matches": {
+        "mean": 0.9188,
+        "n": 17
+      },
+      "wrong_matches": {
+        "mean": null,
+        "n": 0
+      },
+      "ambiguity_flagged_matches_all_rfqs": {
+        "mean": 0.7,
+        "n": 3
+      }
+    },
+    "routing_violations": {
+      "count": 0,
+      "lines": []
+    },
+    "threshold_sweep": [
+      {
+        "threshold": 0.5,
+        "labeled_lines_auto_accepted": 16,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.3929,
+        "ambiguity_flagged_passing_on_confidence_alone": 3
+      },
+      {
+        "threshold": 0.55,
+        "labeled_lines_auto_accepted": 16,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.3929,
+        "ambiguity_flagged_passing_on_confidence_alone": 3
+      },
+      {
+        "threshold": 0.6,
+        "labeled_lines_auto_accepted": 16,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.3929,
+        "ambiguity_flagged_passing_on_confidence_alone": 3
+      },
+      {
+        "threshold": 0.65,
+        "labeled_lines_auto_accepted": 16,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.3929,
+        "ambiguity_flagged_passing_on_confidence_alone": 3
+      },
+      {
+        "threshold": 0.7,
+        "labeled_lines_auto_accepted": 16,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.3929,
+        "ambiguity_flagged_passing_on_confidence_alone": 2
+      },
+      {
+        "threshold": 0.75,
+        "labeled_lines_auto_accepted": 16,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.3929,
+        "ambiguity_flagged_passing_on_confidence_alone": 1
+      },
+      {
+        "threshold": 0.8,
+        "labeled_lines_auto_accepted": 16,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.3929,
+        "ambiguity_flagged_passing_on_confidence_alone": 0
+      },
+      {
+        "threshold": 0.85,
+        "labeled_lines_auto_accepted": 16,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.3929,
+        "ambiguity_flagged_passing_on_confidence_alone": 0
+      },
+      {
+        "threshold": 0.9,
+        "labeled_lines_auto_accepted": 15,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.4286,
+        "ambiguity_flagged_passing_on_confidence_alone": 0
+      },
+      {
+        "threshold": 0.95,
+        "labeled_lines_auto_accepted": 5,
+        "auto_accepted_errors": 0,
+        "review_rate_all_lines": 0.8214,
+        "ambiguity_flagged_passing_on_confidence_alone": 0
+      }
+    ],
+    "errors": [],
+    "definitions": {
+      "labeled_rfqs": [
+        "rfq_01_email",
+        "rfq_02_clearwater",
+        "rfq_03_tricounty"
+      ],
+      "alignment": "answer-key lines are matched to output lines by line number; a missing or extra line is an error",
+      "wrong_line": "a line whose part number (null counts), quantity or unit differs from the key; a line not in the key is wrong",
+      "routing_at_threshold": "auto-accepted = a part number, confidence at or above the threshold, and no flags (the pipeline's rule)",
+      "ambiguity_flags": [
+        "variant_inferred",
+        "close_alternative",
+        "weak_description_match",
+        "discontinued_replaced"
+      ],
+      "as_written": "match if either normalized string (lowercase, letters and digits only) contains the other"
+    }
+  }
+}

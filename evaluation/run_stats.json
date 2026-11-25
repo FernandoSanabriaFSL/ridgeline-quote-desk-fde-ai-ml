@@ -7,7 +7,7 @@
   "rfqs": {
     "rfq_01_email": {
       "status": "ok",
-      "cached": false,
+      "cached": true,
       "latency_s": 4.74,
       "input_tokens": 3114,
       "output_tokens": 595,
@@ -17,7 +17,7 @@
     },
     "rfq_02_clearwater": {
       "status": "ok",
-      "cached": false,
+      "cached": true,
       "latency_s": 4.55,
       "input_tokens": 3574,
       "output_tokens": 830,
@@ -27,7 +27,7 @@
     },
     "rfq_03_tricounty": {
       "status": "ok",
-      "cached": false,
+      "cached": true,
       "latency_s": 11.14,
       "input_tokens": 3296,
       "output_tokens": 1874,
@@ -41,7 +41,7 @@
     },
     "rfq_05_forwarded_chain": {
       "status": "ok",
-      "cached": false,
+      "cached": true,
       "latency_s": 3.28,
       "input_tokens": 3288,
       "output_tokens": 464,
@@ -51,7 +51,7 @@
     },
     "rfq_06_messy": {
       "status": "ok",
-      "cached": false,
+      "cached": true,
       "latency_s": 4.93,
       "input_tokens": 3069,
       "output_tokens": 721,

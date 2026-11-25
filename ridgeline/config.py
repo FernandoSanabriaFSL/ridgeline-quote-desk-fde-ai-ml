@@ -20,6 +20,7 @@ PRODUCTS_CSV = DATA_DIR / "products.csv"
 CROSS_REFERENCE_CSV = DATA_DIR / "cross_reference.csv"
 CUSTOMERS_CSV = DATA_DIR / "customers.csv"
 OUTPUTS_DIR = ROOT / "outputs"
+REVIEW_DIR = OUTPUTS_DIR / "review"
 PROMPTS_DIR = ROOT / "ridgeline" / "prompts"
 
 # The extraction cache is committed, so anyone can reproduce the outputs and metrics

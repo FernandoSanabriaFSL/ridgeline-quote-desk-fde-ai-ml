@@ -1,0 +1,95 @@
+{
+  "rfq_id": "rfq_06_messy",
+  "customer_id": "C1008",
+  "customer_name": "Granite Peak Mining",
+  "lines": [
+    {
+      "line": 1,
+      "as_written": "bolts 3/8 x 1 1/2 gr5 - 300 (we usually get boxes)",
+      "quantity": 3,
+      "unit": "BX",
+      "ridgeline_part_number": "RL142504",
+      "match_method": "description",
+      "confidence": 0.92,
+      "needs_review": true,
+      "flags": [
+        "unit_converted"
+      ],
+      "note": "Customer says they usually get boxes; unclear whether 300 is pieces or boxes; no unit written; 300 treated as pieces: 300 / 100 per BX = 3 BX"
+    },
+    {
+      "line": 2,
+      "as_written": "nitrile gloves L - a few boxes",
+      "quantity": null,
+      "unit": "BX",
+      "ridgeline_part_number": "RL153354",
+      "match_method": "description",
+      "confidence": 0.7,
+      "needs_review": true,
+      "flags": [
+        "quantity_missing",
+        "close_alternative"
+      ],
+      "note": "Amount given only as 'a few'; customer unit BX matches RL153354 (BX) but not RL131850 (PR); scores 1.000 and 1.000 are within 0.12, so RL153354 was taken; close alternative RL131850 (PR, 1.000)"
+    },
+    {
+      "line": 3,
+      "as_written": "NF-778812 x 4 (whatever you have thats equivalent)",
+      "quantity": 4,
+      "unit": null,
+      "ridgeline_part_number": null,
+      "match_method": null,
+      "confidence": null,
+      "needs_review": true,
+      "flags": [
+        "unknown_part_number"
+      ],
+      "note": "Customer will accept an equivalent item; NF-778812 is not in the cross-reference and the line has no description"
+    },
+    {
+      "line": 4,
+      "as_written": "6205 bearings sealed qty 24",
+      "quantity": 24,
+      "unit": "EA",
+      "ridgeline_part_number": "RL104165",
+      "match_method": "description",
+      "confidence": 0.65,
+      "needs_review": true,
+      "flags": [
+        "variant_inferred"
+      ],
+      "note": "the request names 6205 but no part code; RL104165 (2rs) chosen, alternative RL112280 (zz)"
+    },
+    {
+      "line": 5,
+      "as_written": "forklift tires 18x7-8 x4",
+      "quantity": 4,
+      "unit": null,
+      "ridgeline_part_number": null,
+      "match_method": null,
+      "confidence": null,
+      "needs_review": true,
+      "flags": [
+        "not_carried"
+      ],
+      "note": "best candidate RL175880 (Anti-seize compound, copper, 8 oz brush-top) scores 0.300"
+    },
+    {
+      "line": 6,
+      "as_written": "o-rings 214 buna",
+      "quantity": null,
+      "unit": "PK",
+      "ridgeline_part_number": "RL165909",
+      "match_method": "description",
+      "confidence": 0.92,
+      "needs_review": true,
+      "flags": [
+        "quantity_missing"
+      ],
+      "note": "No quantity given"
+    }
+  ],
+  "non_item_rows": [
+    "sent from my phone"
+  ]
+}

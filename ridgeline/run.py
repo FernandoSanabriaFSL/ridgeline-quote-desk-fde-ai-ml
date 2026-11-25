@@ -1,8 +1,9 @@
-"""Entry point: python -m ridgeline.run [--stage extract|match] [--refresh]
+"""Entry point: python -m ridgeline.run [--stage extract|match|catalog] [--refresh]
 
-Without --stage: prints the catalog data-quality report and lists the RFQ files.
+No --stage: the whole pipeline, end to end (extract, match, outputs/ JSON, outputs/review/ drafts, summary).
 --stage extract: runs the extraction stage on every RFQ and prints the result.
 --stage match: matches the cached extractions to Ridgeline part numbers (no model calls).
+--stage catalog: prints the catalog data-quality report and lists the RFQ files.
 """
 import argparse
 import json
@@ -14,11 +15,8 @@ from ridgeline import config
 from ridgeline.catalog import load_catalog
 from ridgeline.extract import ExtractedRfq, extract_rfq
 from ridgeline.match import MatchedLine, build_index, match_rfq
-
-
-def list_rfq_files() -> list[Path]:
-    """Regular files in the RFQ folder, sorted by name. Hidden files such as .DS_Store are skipped."""
-    return sorted(p for p in config.RFQS_DIR.iterdir() if p.is_file() and not p.name.startswith("."))
+from ridgeline.pipeline import list_rfq_files, run_all
+from ridgeline.report import format_summary
 
 
 # --- Printing -------------------------------------------------------------------------------
@@ -159,6 +157,35 @@ def write_run_stats(results: list[ExtractedRfq]) -> None:
     _write_run_stats(data)
 
 
+def write_match_stats(items: list[tuple[ExtractedRfq, list[MatchedLine]]]) -> tuple[int, int, int]:
+    """Record the match settings and counts; returns (lines, matched, needs_review)."""
+    per_rfq: dict[str, dict] = {}
+    methods: Counter = Counter()
+    totals = Counter()
+    for extracted, matched in items:
+        if extracted.status != "ok":
+            per_rfq[extracted.rfq_id] = {"status": extracted.status, "reason": extracted.reason}
+            continue
+        got = sum(1 for m in matched if m.ridgeline_part_number)
+        review = sum(1 for m in matched if m.needs_review)
+        per_rfq[extracted.rfq_id] = {"status": "ok", "lines": len(matched), "matched": got, "needs_review": review}
+        totals.update(lines=len(matched), matched=got, needs_review=review)
+        methods.update(m.match_method for m in matched if m.match_method)
+    data = _read_run_stats()
+    data["match"] = {
+        "as_of_date": config.AS_OF_DATE.isoformat(),
+        "review_threshold": config.REVIEW_THRESHOLD,
+        "lines": totals["lines"],
+        "matched": totals["matched"],
+        "unmatched": totals["lines"] - totals["matched"],
+        "needs_review": totals["needs_review"],
+        "by_method": dict(sorted(methods.items())),
+        "rfqs": per_rfq,
+    }
+    _write_run_stats(data)
+    return totals["lines"], totals["matched"], totals["needs_review"]
+
+
 # --- Stages ---------------------------------------------------------------------------------
 
 def run_extract(refresh: bool) -> None:
@@ -181,62 +208,61 @@ def run_match() -> None:
     as_of = config.AS_OF_DATE
     print(f"as-of date for the cross-reference staleness check: {as_of.isoformat()} | review threshold {config.REVIEW_THRESHOLD}")
 
-    per_rfq: dict[str, dict] = {}
-    methods: Counter = Counter()
-    totals = Counter()
+    items = []
     for path in list_rfq_files():
         extracted = extract_rfq(path, catalog.customers, cache_only=True)
         if extracted.status != "ok":
             print(f"\n=== {extracted.rfq_id} ({path.name}) ===")
             print(f"status: {extracted.status}")
             print(f"reason: {extracted.reason}")
-            per_rfq[extracted.rfq_id] = {"status": extracted.status, "reason": extracted.reason}
+            items.append((extracted, []))
             continue
         matched = match_rfq(extracted, catalog, index, as_of)
         print_matched(extracted, matched)
-        got = sum(1 for m in matched if m.ridgeline_part_number)
-        review = sum(1 for m in matched if m.needs_review)
-        per_rfq[extracted.rfq_id] = {"status": "ok", "lines": len(matched), "matched": got, "needs_review": review}
-        totals.update(lines=len(matched), matched=got, needs_review=review)
-        methods.update(m.match_method for m in matched if m.match_method)
+        items.append((extracted, matched))
 
-    print(
-        f"\n{totals['lines']} lines: {totals['matched']} matched, {totals['lines'] - totals['matched']} unmatched, "
-        f"{totals['needs_review']} need review"
-    )
-    data = _read_run_stats()
-    data["match"] = {
-        "as_of_date": as_of.isoformat(),
-        "review_threshold": config.REVIEW_THRESHOLD,
-        "lines": totals["lines"],
-        "matched": totals["matched"],
-        "unmatched": totals["lines"] - totals["matched"],
-        "needs_review": totals["needs_review"],
-        "by_method": dict(sorted(methods.items())),
-        "rfqs": per_rfq,
-    }
-    _write_run_stats(data)
+    lines, got, review = write_match_stats(items)
+    print(f"\n{lines} lines: {got} matched, {lines - got} unmatched, {review} need review")
     print(f"run stats: {config.RUN_STATS_JSON.relative_to(config.ROOT)}")
+
+
+def run_everything(refresh: bool) -> None:
+    """The whole pipeline: extraction (cache first), matching, outputs/, review drafts, summary."""
+    print("Ridgeline quote desk: extraction is served from the cache when it can be; the model is called only on a miss.")
+    print(f"as-of date {config.AS_OF_DATE.isoformat()} | review threshold {config.REVIEW_THRESHOLD}\n")
+    results, _ = run_all(refresh=refresh)
+    write_run_stats([r.extracted for r in results])
+    write_match_stats([(r.extracted, r.matched) for r in results])
+
+    root = config.ROOT
+    for r in results:
+        source = f"{r.extracted.status}" if r.extracted.status != "ok" else f"{r.lines} lines"
+        print(
+            f"{r.path.name:<28} {source:<12} -> {r.json_path.relative_to(root)}, {r.review_path.relative_to(root)}"
+        )
+    print("\nSummary (auto-accepted = no review needed; every unreadable file is one review line)")
+    print(format_summary([(r.output.rfq_id, r.lines, r.auto_accepted, r.to_review) for r in results]))
+    print("\nNothing was sent to anyone. Every draft needs specialist approval.")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(prog="python -m ridgeline.run")
-    parser.add_argument("--stage", choices=["extract", "match"], help="run a pipeline stage")
-    parser.add_argument("--refresh", action="store_true", help="skip the extraction cache (extract stage)")
+    parser.add_argument("--stage", choices=["extract", "match", "catalog"], help="run one stage instead of the whole pipeline")
+    parser.add_argument("--refresh", action="store_true", help="skip the extraction cache")
     args = parser.parse_args()
 
     if args.stage == "extract":
         run_extract(refresh=args.refresh)
-        return
-    if args.stage == "match":
+    elif args.stage == "match":
         run_match()
-        return
-
-    load_catalog(report=True)
-    files = list_rfq_files()
-    print(f"\nRFQ files in {config.RFQS_DIR.relative_to(config.ROOT)}/ ({len(files)}):")
-    for path in files:
-        print(f"  {path.stem:<28} {path.suffix}")
+    elif args.stage == "catalog":
+        load_catalog(report=True)
+        files = list_rfq_files()
+        print(f"\nRFQ files in {config.RFQS_DIR.relative_to(config.ROOT)}/ ({len(files)}):")
+        for path in files:
+            print(f"  {path.stem:<28} {path.suffix}")
+    else:
+        run_everything(refresh=args.refresh)
 
 
 if __name__ == "__main__":

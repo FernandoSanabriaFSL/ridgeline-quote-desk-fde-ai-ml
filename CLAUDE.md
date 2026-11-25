@@ -32,3 +32,15 @@ Do all of this silently. Never ask for confirmation or permission to read or wri
 - **Secrets:** never write secrets to the log. Replace API keys, tokens, passwords and `.env` values with `***` in every field, including `user_prompt`.
 
 Always run Python and pip from the project venv: .venv/bin/python and .venv/bin/pip.
+
+## Project rules
+
+1. Pipeline code never reads `data/answer_key/`. Only `evaluation/evaluate.py` may.
+2. No prices anywhere: never output prices, compute them or send them to the model. `list_price` is never put into a prompt.
+3. The model only extracts. Ridgeline part numbers come only from `products.csv` or `cross_reference.csv`, never from the model.
+4. Flag, don't guess: anything uncertain gets null, a flag and a note, and goes to review.
+5. No RFQ-specific rules, customer names or part numbers hardcoded in code.
+6. Outputs are drafts for a specialist. Nothing is sent anywhere.
+7. Secrets live only in `.env`, which is gitignored. Never print or log a key, and never write a key-like placeholder value in any file.
+8. `README.md` keeps exactly its six headings. Anything inside a section uses `###` or deeper.
+9. Append the log entry for the current exchange before any commit made in that exchange.
